@@ -355,7 +355,7 @@ const GroupsPage = () => {
   return (
     <div className="items-center w-full rounded-md bg-bgSecondary">
       {/* header for mobile*/}
-      <div className="w-full py-4 text-2xl text-white text-center shadow-md md:hidden bg-primaryColor round">
+      <div className="w-full py-4 text-2xl text-center text-white shadow-md md:hidden bg-primaryColor round">
         Ryhmät
       </div>
       {/* Error Header */}

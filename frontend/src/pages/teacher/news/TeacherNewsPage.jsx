@@ -6,7 +6,7 @@ import LoadingScreen from "../../../components/LoadingScreen";
 import { format } from "date-fns";
 import { FiEdit3 } from "react-icons/fi";
 import { useBigModal } from "../../../hooks/useBigModal";
-import { useConfirmModal } from "../../../hooks/useConfirmModal";
+import { TbPin, TbPinFilled, TbPinnedOff } from "react-icons/tb";
 
 const RenderSingleNews = ({ news }) => {
   const [opened, setOpened] = useState(false);
@@ -14,28 +14,33 @@ const RenderSingleNews = ({ news }) => {
   const { openBigModal } = useBigModal();
   return (
     <div
-      className="bg-bgSecondary p-4 rounded-md md:max-w-96 border border-borderPrimary cursor-pointer hover:bg-bgPrimary"
+      className="relative p-4 border rounded-md cursor-pointer bg-bgSecondary md:max-w-96 border-borderPrimary hover:bg-bgPrimary"
       onClick={toggleOpen}
     >
-      <div className="w-full border-b border-borderPrimary px-1 relative">
+      {news.pinned ? (
+
+          <TbPinFilled size={20} title="Kiinnitetty" className="absolute top-[-3px] right-[-3px] m-1 text-primaryColor" />
+
+      ) : null}
+      <div className="relative w-full px-1 border-b border-borderPrimary">
         <button
           onClick={(event) => {
             event.stopPropagation();
             openBigModal("editNewsEntry", { entryId: news.id });
           }}
-          className="text-iconGray absolute top-1 right-1 hover:text-primaryColor"
+          className="absolute text-iconGray top-1 right-1 hover:text-primaryColor"
         >
           <FiEdit3 size={20} />
         </button>
-        <h3 className="text-lg text-center font-medium">{news.title}</h3>
-        <div className="text-sm flex p-1 text-textSecondary text-start">
+        <h3 className="text-lg font-medium text-center">{news.title}</h3>
+        <div className="flex p-1 text-sm text-textSecondary text-start">
           <span>{format(new Date(news.created_at), "dd.MM.yyyy")}</span>
           <span className="ml-auto">{news.author}</span>
         </div>
       </div>
-      <div className="flex text-sm flex-wrap pt-2">
+      <div className="flex flex-wrap pt-2 text-sm">
         {news.campuses && news.campuses.length > 0 && (
-          <div className="rounded-xl bg-btnGray text-textPrimary border-2 mx-1 px-2">
+          <div className="px-2 mx-1 border-2 rounded-xl bg-btnGray text-textPrimary">
             {news.campuses.map((campus, index) => (
               <span key={index} className="tag">
                 {campus}
@@ -44,7 +49,7 @@ const RenderSingleNews = ({ news }) => {
           </div>
         )}
         {news.sports && news.sports.length > 0 && (
-          <div className="rounded-xl bg-btnGray text-textPrimary border-2 mx-1 px-2">
+          <div className="px-2 mx-1 border-2 rounded-xl bg-btnGray text-textPrimary">
             {news.sports.map((sport, index) => (
               <span key={index} className="tag">
                 {sport}
@@ -53,7 +58,7 @@ const RenderSingleNews = ({ news }) => {
           </div>
         )}
         {news.student_groups && news.student_groups.length > 0 && (
-          <div className="rounded-xl bg-btnGray text-textPrimary border-2 mx-1 px-2">
+          <div className="px-2 mx-1 border-2 rounded-xl bg-btnGray text-textPrimary">
             {news.student_groups.map((group, index) => (
               <span key={index} className="tag">
                 {group}
@@ -93,7 +98,7 @@ const TeacherNewsPage = () => {
 
   if (newsIsLoading) {
     return (
-      <div className="w-full h-full flex justify-center items-center">
+      <div className="flex items-center justify-center w-full h-full">
         <LoadingScreen />
       </div>
     );
@@ -101,75 +106,31 @@ const TeacherNewsPage = () => {
 
   if (newsError) return <p>Error: {newsError.message}</p>;
 
+  const sortedNews = newsData
+    ? [...newsData].sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return new Date(b.created_at) - new Date(a.created_at);
+      })
+    : [];
+
   return (
-    <div className="flex w-full h-full justify-center">
-    <div className="flex w-full md:w-fit  md:min-w-[760px] flex-col gap-4 bg-bgSecondary ">
-      <header className="w-full py-4 relative text-2xl text-center border-b border-borderPrimary md:text-textPrimary md:bg-bgSecondary bg-primaryColor text-white ">
-          Tiedotteet 
+    <div className="flex justify-center w-full h-full">
+      <div className="flex w-full md:w-fit  md:min-w-[760px] flex-col gap-4 bg-bgSecondary ">
+        <header className="relative w-full py-4 text-2xl text-center text-white border-b border-borderPrimary md:text-textPrimary md:bg-bgSecondary bg-primaryColor ">
+          Tiedotteet
         </header>
-        <div className="flex justify-around gap-4 flex-wrap items-end">
-          {/*
-          <div className="flex gap-4">
-            <input
-              type="text"
-              name="newsSearch"
-              id="newsSearchInput"
-              placeholder="Hae tiedotteita"
-              className="bg-bgGray rounded-md border border-borderPrimary px-2 h-10"
-            />
-          </div>
-          <div className="flex gap-8">
-            <div className="flex flex-col">
-              {" "}
-              <label
-                htmlFor="selectFocusGroup"
-                className="text-sm text-textSecondary px-2"
-              >
-                Suodata:
-              </label>
-              <select
-                name="selectFocusGroup"
-                id="selectFocusGroup"
-                className="bg-bgSecondary border border-borderPrimary text-textSecondary p-2 rounded-md
-           hover:cursor-pointer hover:bg-bgPrimary focus-visible:outline-none focus:bg-bgPrimary"
-              >
-                <option value="all">Kaikki</option>
-                <option value="school">oma koulu</option>
-                <option value="group">oma ryhmä</option>
-                <option value="sport">oma laji</option>
-              </select>
-            </div>
-            <div className="flex flex-col">
-              {" "}
-              <label
-                htmlFor="selectSorting"
-                className="text-sm text-textSecondary px-2"
-              >
-                Järjestys:
-              </label>
-              <select
-                name="selectSorting"
-                id="selectSorting"
-                className="bg-bgSecondary border border-borderPrimary text-textSecondary p-2 rounded-md
-           hover:cursor-pointer hover:bg-bgPrimary focus-visible:outline-none focus:bg-bgPrimary"
-              >
-                <option value="newest">Uusimmat</option>
-                <option value="oldest">Vanhimmat</option>
-              </select>
-            </div>
-          </div>
-  */}
+        <div className="flex flex-wrap items-end justify-around gap-4">
           <button
             onClick={() => openBigModal("newNewsEntry")}
-            className="px-4 py-2 border border-borderPrimary rounded-md bg-primaryColor text-white
-              hover:bg-hoverPrimary"
+            className="px-4 py-2 text-white border rounded-md border-borderPrimary bg-primaryColor hover:bg-hoverPrimary"
           >
             {`+ Uusi tiedote`}
           </button>
         </div>
 
-        <div className="grid justify-center md:grid-cols-2 m-4 auto-rows-max gap-8">
-          {newsData.map((news) => (
+        <div className="grid justify-center gap-8 m-4 md:grid-cols-2 auto-rows-max">
+          {sortedNews.map((news) => (
             <RenderSingleNews key={news.id} news={news} />
           ))}
         </div>
