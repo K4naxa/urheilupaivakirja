@@ -1,7 +1,7 @@
 services:
   urheilupaivakirja-demo:
     container_name: urheilupaivakirja-demo
-    image: urheilupaivakirja-demo
+    image: k4na/urheilupaivakirja-demo
     environment:
       DB_HOST: host.docker.internal
       DB_USER: root
