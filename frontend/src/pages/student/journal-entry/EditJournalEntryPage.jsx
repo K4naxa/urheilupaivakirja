@@ -8,9 +8,9 @@ import { FiTrash2 } from "react-icons/fi";
 import { useConfirmModal } from "../../../hooks/useConfirmModal.jsx";
 
 const inputContainer =
-  "flex flex-col items-center gap-0.5 sm:gap-1 w-full max-w-[370px] p-1";
-const inputLabel = "text-textPrimary font-medium";
-const optionContainer = "flex justify-between w-full p-2";
+  "flex flex-col p-2 gap-0.5 sm:gap-1 w-full max-w-[370px] p-1";
+const inputLabel = "block text-sm font-medium text-textSecondary text-left";
+const optionContainer = "grid grid-cols-3 gap-3 justify-between w-full py-1";
 
 const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
   const { openConfirmModal } = useConfirmModal();
@@ -418,7 +418,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
 
   const renderRadioButton = (name, value, label, onChangeHandler) => {
     return (
-      <div className="relative w-24" key={`${name}-${value}`}>
+      <div className="relative w-full" key={`${name}-${value}`}>
         <input
           type="radio"
           name={name}
@@ -426,14 +426,12 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
           checked={journalEntryData[name] === value}
           id={`${name}-${value}`}
           onChange={onChangeHandler}
-          className="absolute opacity-0 w-0 h-0 peer"
+          className="absolute w-0 h-0 opacity-0 peer"
           tabIndex="0" // Make sure it's focusable
         />
         <label
           htmlFor={`${name}-${value}`}
-          className="peer-checked:border-primaryColor  peer-checked:text-bgSecondary peer-checked:bg-primaryColor bg-bgSecondary
-          peer-focus-visible:ring-2 peer-focus-visible:ring-secondaryColor p-1 block rounded border border-borderPrimary text-textPrimary text-center cursor-pointer
-          active:scale-95 transition-transform duration-75 hover:border-primaryColor hover:text-primaryColor"
+          className="block p-2 text-center transition-transform duration-75 border-2 rounded-md cursor-pointer peer-checked:border-primaryColor peer-checked:text-bgSecondary peer-checked:bg-primaryColor bg-bgPrimary peer-focus-visible:ring-2 peer-focus-visible:ring-secondaryColor border-borderPrimary text-textPrimary active:scale-95 hover:border-primaryColor hover:text-primaryColor"
         >
           {label}
         </label>
@@ -499,28 +497,28 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
           className="flex flex-col items-center gap-1 sm:gap-2 p-4 sm:px-8 bg-bgSecondary sm:rounded-b-md flex-grow"
           onSubmit={editJournalEntryHandler}
         >
-          <div className="flex flex-col items-center w-full p-1">
-            <div className="flex flex-row gap-12 justify-between">
+          <div className="flex flex-row justify-centerw-full mt-2 max-w-md gap-8">
+            {[
+              {
+                type: "2",
+                label: "Lepopäivä",
+                color: "bg-bgRest border-bgRest",
+              },
+              {
+                type: "3",
+                label: "Sairauspäivä",
+                color: "bg-bgSick border-bgSick",
+              },
+            ].map(({ type, label, color }) => (
               <button
+                key={type}
                 type="button"
-                onClick={() => entryTypeChangeHandler("2")}
-                className={`w-32 block rounded-xl text-textPrimary cursor-pointer active:scale-95 transition-transform duration-75
-              border-2 ${journalEntryData.entry_type === "2" ? "border-bgRest bg-bgRest" : "border-bgRest bg-bgSecondary hover:bg-bgRest hover:bg-opacity-40"}
-              `}
+                onClick={() => entryTypeChangeHandler(type)}
+                className={`w-36 py-2 text-sm font-medium text-textPrimary rounded-xl border-2 bg-bgPrimary transition-all duration-150 ${journalEntryData.entry_type === type ? `${color}` : " border-borderPrimary"} hover:bg-opacity-20 hover:border-opacity-50 hover:${color} hover:text-textPrimary`}
               >
-                Lepopäivä
+                {label}
               </button>
-
-              <button
-                type="button"
-                onClick={() => entryTypeChangeHandler("3")}
-                className={`w-32 block rounded-xl text-textPrimary cursor-pointer active:scale-95 transition-transform duration-75
-              border-2 ${journalEntryData.entry_type === "3" ? "border-bgSick bg-bgSick" : "border-bgSick bg-bgSecondary hover:bg-bgSick hover:bg-opacity-40"}
-              `}
-              >
-                Sairauspäivä
-              </button>
-            </div>
+            ))}
           </div>
 
           <div className={`${inputContainer} px-2.5`}>
@@ -528,7 +526,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
               Päivämäärä
             </label>
             <input
-              className={`text-textPrimary border-borderPrimary h-9 w-full bg-bgSecondary focus-visible:outline-none border-b p-1 ${errors.date ? "border-red-500" : "border-borderPrimary"} text-center`}
+              className={`w-full px-3 py-2 mt-1 text-center border-2 border-borderPrimary rounded-md bg-bgPrimary text-textPrimary focus:outline-none color dark:[color-scheme:dark] focus:ring-2 focus:ring-primaryColor ${errors.date ? "border-red-500" : ""}`}
               type="date"
               name="date"
               value={journalEntryData.date}
@@ -544,9 +542,9 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
               <label className={inputLabel} htmlFor="length_in_minutes">
                 Kesto: {convertTime(journalEntryData.length_in_minutes)}
               </label>
-              <div className="w-full p-1">
+              <div className="w-full relative mb-2">
                 <input
-                  className="bg-bgPrimary w-full"
+                  className="w-full h-4 bg-bgPrimary border-2 border-borderPrimary rounded-lg appearance-none cursor-pointer"
                   type="range"
                   min="30"
                   max="195"
@@ -556,6 +554,15 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
                   onChange={changeHandler}
                   name="length_in_minutes"
                 />
+                <span className="text-sm text-textSecondary absolute start-[18%] -bottom-4">
+                  1h
+                </span>
+                <span className="text-sm text-textSecondary absolute start-[55%] -translate-x-1/2 rtl:translate-x-1/2 -bottom-4">
+                  2h
+                </span>
+                <span className="text-sm text-textSecondary absolute start-[87%] -bottom-4">
+                  3h
+                </span>
               </div>
             </div>
           )}
@@ -604,7 +611,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
                   Harjoituskategoria
                 </label>
                 <select
-                  className={`text-md text-textPrimary bg-bgSecondary h-9 w-full  border-b p-1 ${errors.workout_category ? "border-red-500" : "border-borderPrimary"} text-center`}
+                  className={`text-md text-textPrimary rounded-md bg-bgPrimary w-full border-2 p-2 ${errors.workout_category ? "border-red-500" : "border-borderPrimary"} text-center`}
                   id="workoutCategory"
                   name="workout_category"
                   value={journalEntryData.workout_category}
@@ -654,7 +661,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
             {showDetails && (
               <div className="relative w-full">
                 <textarea
-                  className="w-full h-18 border-borderPrimary bg-bgPrimary border rounded-md p-1 text-textPrimary"
+                  className="w-full h-18 border-borderPrimary bg-bgPrimary border-2 rounded-md p-2 pb-4 text-textPrimary ring-2 focus:outline-none ring-transparent focus:ring-2 focus:ring-primaryColor"
                   onChange={changeHandler}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
@@ -667,7 +674,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
                   value={journalEntryData.details}
                   rows={2}
                   maxLength={200}
-                  style={{ resize: "none", overflowY: "hidden" }} // Prevent manual resizing and hide scrollbar initially
+                  style={{ resize: "none", overflowY: "auto" }}
                   required
                 ></textarea>
                 <p
@@ -684,28 +691,23 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
             )}
           </div>
 
-          <div className="flex flex-col text-red-400 text-center items-center gap-4 w-full p-4 mt-auto">
+          <div className="flex flex-col items-center w-full gap-4 p-4 mt-auto text-center text-red-400">
             {conflict.messageShort && <p>{conflict.messageShort}</p>}
-            <div className="flex w-full">
-              <div className="flex-1"></div>
-              <div>
-                <button
-                  className={`min-w-[160px] text-white mx-6 px-4 py-4 rounded-md bg-primaryColor border-borderPrimary active:scale-95 transition-transform duration-75 hover:bg-hoverPrimary
-      ${submitButtonIsDisabled ? "bg-gray-400 opacity-20 text-gray border-gray-300 cursor-not-allowed" : "cursor-pointer"}`}
-                  type="submit"
-                  disabled={submitButtonIsDisabled}
-                >
-                  {getSubmitButtonText(journalEntryData.entry_type)}
-                </button>
-              </div>
-              <div className="flex-1 flex justify-center">
-                <button
-                  className="hover:cursor-pointer hover:bg-bgGray rounded m-1.5 p-2"
-                  onClick={deleteJournalEntryHandler}
-                >
-                  <FiTrash2 className="text-2xl" />
-                </button>
-              </div>
+            <div className="flex w-full justify-between items-center">
+              <button
+                className={`min-w-[160px] text-white px-4 py-4 rounded-md active:scale-95 transition-all duration-150
+      ${submitButtonIsDisabled ? "bg-bgPrimary cursor-not-allowed" : "border-borderPrimary cursor-pointer bg-primaryColor"}`}
+                type="submit"
+                disabled={submitButtonIsDisabled}
+              >
+                {getSubmitButtonText(journalEntryData.entry_type)}
+              </button>
+              <button
+                className="hover:cursor-pointer hover:bg-bgGray rounded m-1.5 p-2"
+                onClick={deleteJournalEntryHandler}
+              >
+                <FiTrash2 className="text-2xl" />
+              </button>
             </div>
           </div>
         </form>
