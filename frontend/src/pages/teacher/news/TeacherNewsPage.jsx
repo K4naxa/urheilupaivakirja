@@ -6,7 +6,7 @@ import LoadingScreen from "../../../components/LoadingScreen";
 import { format } from "date-fns";
 import { FiEdit3 } from "react-icons/fi";
 import { useBigModal } from "../../../hooks/useBigModal";
-import { TbPin, TbPinFilled, TbPinnedOff } from "react-icons/tb";
+import { TbPinFilled } from "react-icons/tb";
 
 const RenderSingleNews = ({ news }) => {
   const [opened, setOpened] = useState(false);
