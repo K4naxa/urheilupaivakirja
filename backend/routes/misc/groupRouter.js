@@ -135,6 +135,9 @@ router.put("/:id", isAuthenticated, isTeacher, group_name, (req, res) => {
     name: req.body.group_name,
   };
 
+  console.log("Updating group:", group_name);
+  console.log("Updated group:", updatedGroup);
+
   knex("student_groups")
     .where("id", id)
     .update(updatedGroup)

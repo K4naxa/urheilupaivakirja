@@ -19,14 +19,16 @@ router.get("/", isAuthenticated, isTeacher, async (req, res) => {
         "c.name as campus",
         "sp.name as sport",
         "sp.is_verified as sport_verified",
-        "u.email"
+        "u.email",
+        "u.created_at",
+        "u.email_verified"
       )
       .leftJoin("users as u", "s.user_id", "u.id")
       .leftJoin("student_groups as sg", "s.group_id", "sg.id")
       .leftJoin("campuses as c", "s.campus_id", "c.id")
       .leftJoin("sports as sp", "s.sport_id", "sp.id")
       .where("s.verified", false) // only include unverified students
-      .andWhere("u.email_verified", true) // only include students with verified email
+      //.andWhere("u.email_verified", true) // only include students with verified email
       .groupBy(
         "s.user_id",
         "u.email",
@@ -40,6 +42,7 @@ router.get("/", isAuthenticated, isTeacher, async (req, res) => {
       );
   };
 
+  /*
   // get students with unverified emails
   const getEmailNotVerifiedStudents = () => {
     return knex("students as s")
@@ -71,6 +74,7 @@ router.get("/", isAuthenticated, isTeacher, async (req, res) => {
         "sp.is_verified"
       );
   };
+  */
 
   // get unverified sports
   const getUnverifiedSports = () => {
@@ -89,19 +93,16 @@ router.get("/", isAuthenticated, isTeacher, async (req, res) => {
   try {
     const [
       students,
-      emailNotVerifiedStudents,
       sports,
       student_groups,
     ] = await Promise.all([
       getUnverifiedStudents(),
-      getEmailNotVerifiedStudents(),
       getUnverifiedSports(),
       getUnverifiedStudentGroups(),
     ]);
 
     res.status(200).json({
       students,
-      email_not_verified_students: emailNotVerifiedStudents,
       sports,
       student_groups,
     });

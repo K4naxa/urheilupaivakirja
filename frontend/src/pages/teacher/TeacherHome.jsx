@@ -473,7 +473,7 @@ function TeacherHome() {
           name="sorting"
           id="sortingSelect"
           value={state.selectedSorting}
-          className="p-1 border m-auto rounded-md bg-bgSecondary border-borderPrimary text-textSecondary hover:cursor-pointer "
+          className="p-1 m-auto border rounded-md bg-bgSecondary border-borderPrimary text-textSecondary hover:cursor-pointer "
           onChange={(e) => {
             handleViewUpdate({ ...state, selectedSorting: e.target.value });
           }}
@@ -539,8 +539,8 @@ function TeacherHome() {
                   <FiChevronLeft />
                 </IconContext.Provider>
               </button>
-              <span className="text-xl flex gap-2 items-center">
-                <p className="">viikko</p>
+              <span className="flex items-center gap-2 text-xl">
+                <p className="">Viikko</p>
                 {getWeek(state.showDate)}
               </span>
               <button
@@ -647,12 +647,12 @@ function TeacherHome() {
             </div>
             {renderSortingSelect()}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 justify-items-center lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 justify-items-center lg:grid-cols-4 lg:gap-8">
             {journals.map((journal) => {
               return (
                 <div
                   key={journal.user_id}
-                  className="relative flex flex-col w-full h-fit max-w-sm gap-2 p-4 overflow-hidden border rounded-md border-borderPrimary hover:bg-hoverDefault group/studentCard"
+                  className="relative flex flex-col w-full max-w-sm gap-2 p-4 overflow-hidden border rounded-md h-fit border-borderPrimary hover:bg-hoverDefault group/studentCard"
                   id="studentCard"
                 >
                   {

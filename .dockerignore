@@ -13,3 +13,4 @@ Docker
 */env_local-template
 backend/tests/
 .env
+/screenshots/
