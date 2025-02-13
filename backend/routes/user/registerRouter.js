@@ -17,7 +17,6 @@ const { validationResult } = require("express-validator");
 const { email, newPassword, first_name, last_name } = require("../../utils/validation");
 
 // Register a new student
-// Register a new student
 router.post("/", [email, newPassword, first_name, last_name], async (req, res, next) => {
   const {
     email,

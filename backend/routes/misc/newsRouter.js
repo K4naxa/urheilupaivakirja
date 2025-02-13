@@ -126,7 +126,6 @@ router.put("/:id", isAuthenticated, isTeacher, async (req, res) => {
         title,
         content,
         public,
-        created_at: date,
         pinned,
         teacher_id: user_id,
       });
