@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const config = require("../../utils/config");
-const options = config.DATABASE_OPTIONS;
-const knex = require("knex")(options);
+const knex = require("../../utils/dbConnection");
 
 // get dropdown options for student registration
 router.get("/options", async (req, res, next) => {

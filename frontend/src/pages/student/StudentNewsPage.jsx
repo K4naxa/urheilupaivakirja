@@ -6,6 +6,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 import { format } from "date-fns";
 import { FiArrowLeft } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { TbPinFilled } from "react-icons/tb";
 
 const RenderSingleNews = ({ news }) => {
   const [opened, setOpened] = useState(false);

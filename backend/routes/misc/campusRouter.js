@@ -3,9 +3,8 @@ var router = express.Router();
 
 const { isAuthenticated, isTeacher } = require("../../utils/authMiddleware");
 
-const config = require("../../utils/config");
-const options = config.DATABASE_OPTIONS;
-const knex = require("knex")(options);
+const knex = require("../../utils/dbConnection");
+
 const { campus_name } = require("../../utils/validation");
 const { validationResult } = require("express-validator");
 

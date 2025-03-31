@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const jwt = require("jsonwebtoken");
+
+const knex = require("../../utils/dbConnection");
+
 const config = require("../../utils/config");
-const options = config.DATABASE_OPTIONS;
-const knex = require("knex")(options);
 
 const bcrypt = require("bcryptjs");
 

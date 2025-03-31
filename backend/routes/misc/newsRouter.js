@@ -17,9 +17,7 @@ const [newNewsEntryData, setNewNewsEntryData] = useState({
 });
 */
 
-const config = require("../../utils/config");
-const options = config.DATABASE_OPTIONS;
-const knex = require("knex")(options);
+const knex = require("../../utils/dbConnection");
 
 router.post("/", isAuthenticated, isTeacher, async (req, res) => {
   const { title, content, public, pinned, date, campuses = [], sports = [], student_groups = [] } = req.body;
