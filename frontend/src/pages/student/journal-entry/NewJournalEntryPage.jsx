@@ -643,7 +643,7 @@ const NewJournalEntryPage = ({ onClose, studentData, date }) => {
           <div className="flex flex-col items-center w-full gap-4 p-4 mt-auto text-center text-red-400">
             {conflict.messageShort && <p>{conflict.messageShort}</p>}
             <button
-              className={`min-w-[160px] text-white px-4 py-4 rounded-md   active:scale-95 transition-all duration-150
+              className={`min-w-[160px] text-white px-4 py-4 rounded-md  hover:bg-hoverPrimary active:scale-95 transition-all duration-150
     ${submitButtonIsDisabled ? "bg-bgPrimary cursor-not-allowed" : "border-borderPrimary cursor-pointer bg-primaryColor"}`}
               type="submit"
               disabled={submitButtonIsDisabled}

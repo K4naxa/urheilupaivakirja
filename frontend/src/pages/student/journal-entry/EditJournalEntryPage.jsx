@@ -695,7 +695,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
             {conflict.messageShort && <p>{conflict.messageShort}</p>}
             <div className="relative">
               <button
-                className={`min-w-[160px] text-white px-4 py-4 rounded-md active:scale-95 transition-all duration-150
+                className={`min-w-[160px] text-white px-4 py-4 rounded-md hover:bg-hoverPrimary active:scale-95 transition-all duration-150
       ${submitButtonIsDisabled ? "bg-bgPrimary cursor-not-allowed" : "border-borderPrimary cursor-pointer bg-primaryColor"}`}
                 type="submit"
                 disabled={submitButtonIsDisabled}
