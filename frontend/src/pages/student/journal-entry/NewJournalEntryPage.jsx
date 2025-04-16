@@ -369,7 +369,7 @@ const NewJournalEntryPage = ({ onClose, studentData, date }) => {
         />
         <label
           htmlFor={`${name}-${value}`}
-          className="block p-2 text-center transition-transform duration-75 border-2 rounded-md cursor-pointer peer-checked:border-primaryColor peer-checked:text-bgSecondary peer-checked:bg-primaryColor bg-bgPrimary peer-focus-visible:ring-2 peer-focus-visible:ring-secondaryColor border-borderPrimary text-textPrimary active:scale-95 hover:border-primaryColor hover:text-primaryColor"
+          className="block p-2 text-center transition-transform duration-75 border-2 rounded-md cursor-pointer select-none peer-checked:border-primaryColor peer-checked:text-bgSecondary peer-checked:bg-primaryColor bg-bgPrimary peer-focus-visible:ring-2 peer-focus-visible:ring-secondaryColor border-borderPrimary text-textPrimary active:scale-95 hover:border-primaryColor hover:text-primaryColor"
         >
           {label}
         </label>
@@ -442,7 +442,7 @@ const NewJournalEntryPage = ({ onClose, studentData, date }) => {
           onSubmit={newJournalEntryHandler}
         >
           {/* Entry Type Selection */}
-          <div className="flex flex-row justify-centerw-full mt-2 max-w-md gap-8">
+          <div className="flex flex-row max-w-md gap-8 mt-2 justify-centerw-full">
             {[
               {
                 type: "2",
@@ -489,9 +489,9 @@ const NewJournalEntryPage = ({ onClose, studentData, date }) => {
               <label className={inputLabel} htmlFor="length_in_minutes">
                 Kesto: {convertTime(newJournalEntryData.length_in_minutes)}
               </label>
-              <div className="w-full  relative mb-2">
+              <div className="relative w-full mb-2">
                 <input
-                  className="w-full h-4 bg-bgPrimary border-2 border-borderPrimary rounded-lg appearance-none  cursor-pointer"
+                  className="w-full h-4 border-2 rounded-lg appearance-none cursor-pointer bg-bgPrimary border-borderPrimary"
                   type="range"
                   min="30"
                   max="195"
@@ -609,7 +609,7 @@ const NewJournalEntryPage = ({ onClose, studentData, date }) => {
             {showDetails && (
               <div className="relative w-full">
                 <textarea
-                  className="w-full h-18 border-borderPrimary bg-bgPrimary border-2 rounded-md p-2 pb-4 text-textPrimary ring-2 focus:outline-none ring-transparent focus:ring-2 focus:ring-primaryColor"
+                  className="w-full p-2 pb-4 border-2 rounded-md h-18 border-borderPrimary bg-bgPrimary text-textPrimary ring-2 focus:outline-none ring-transparent focus:ring-2 focus:ring-primaryColor"
                   onChange={changeHandler}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
@@ -652,7 +652,7 @@ const NewJournalEntryPage = ({ onClose, studentData, date }) => {
                 <div role="status">
                   <svg
                     aria-hidden="true"
-                    className="w-8 h-8 text-borderPrimary animate-spin  fill-primaryColor mx-auto"
+                    className="w-8 h-8 mx-auto text-borderPrimary animate-spin fill-primaryColor"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

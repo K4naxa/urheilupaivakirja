@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 const BigModal = ({ isOpen, onClose, content }) => {
-  const modalRef = useRef(null);
+  const backgroundRef = useRef(null);
 
   useEffect(() => {
     const handleEscape = (event) => {
@@ -10,7 +10,7 @@ const BigModal = ({ isOpen, onClose, content }) => {
     };
 
     const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+      if (backgroundRef.current && event.target === backgroundRef.current) {
         onClose();
       }
     };
@@ -31,11 +31,11 @@ const BigModal = ({ isOpen, onClose, content }) => {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-20 flex items-start justify-center overflow-hidden bg-black bg-opacity-50">
-      <div
-        ref={modalRef}
-        className="w-dvw h-dvh sm:w-auto sm:h-auto sm:rounded-md sm:shadow-lg overflow-hidden sm:mt-[8dvh] sm:mb-[8dvh]"
-      >
+    <div
+      ref={backgroundRef}
+      className="fixed inset-0 z-20 flex items-start justify-center overflow-hidden bg-black bg-opacity-50"
+    >
+      <div className="w-dvw h-dvh sm:w-auto sm:h-auto sm:rounded-md sm:shadow-lg overflow-hidden sm:mt-[8dvh] sm:mb-[8dvh]">
         <div className="flex flex-col h-full max-h-full sm:max-h-[90vh] overflow-auto">
           {content}
         </div>
