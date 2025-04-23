@@ -431,7 +431,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
         />
         <label
           htmlFor={`${name}-${value}`}
-          className="block p-2 text-center transition-transform duration-75 border-2 rounded-md cursor-pointer peer-checked:border-primaryColor peer-checked:text-bgSecondary peer-checked:bg-primaryColor bg-bgPrimary peer-focus-visible:ring-2 peer-focus-visible:ring-secondaryColor border-borderPrimary text-textPrimary active:scale-95 hover:border-primaryColor hover:text-primaryColor"
+          className="block p-2 text-center transition-transform duration-75 border-2 rounded-md cursor-pointer select-none peer-checked:border-primaryColor peer-checked:text-bgSecondary peer-checked:bg-primaryColor bg-bgPrimary peer-focus-visible:ring-2 peer-focus-visible:ring-secondaryColor border-borderPrimary text-textPrimary active:scale-95 hover:border-primaryColor hover:text-primaryColor"
         >
           {label}
         </label>
@@ -483,21 +483,21 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
 
   return (
     <>
-      <div className="flex flex-col h-full sm:rounded-md overflow-auto hide-scrollbar transition-transform duration-300 ">
-        <div className="relative bg-primaryColor p-3 sm:p-4 text-center text-white text-xl shadow-md sm:rounded-t-md">
+      <div className="flex flex-col h-full overflow-auto transition-transform duration-300 sm:rounded-md hide-scrollbar ">
+        <div className="relative p-3 text-xl text-center text-white shadow-md bg-primaryColor sm:p-4 sm:rounded-t-md">
           <p className="sm:min-w-[400px] cursor-default	">Muokkaa merkintää</p>
           <button
             onClick={onClose}
-            className="absolute bottom-1/2 translate-y-1/2 left-5 text-2xl hover:scale-125 transition-transform duration-150"
+            className="absolute text-2xl transition-transform duration-150 translate-y-1/2 bottom-1/2 left-5 hover:scale-125"
           >
             <FiArrowLeft />
           </button>
         </div>
         <form
-          className="flex flex-col items-center gap-1 sm:gap-2 p-4 sm:px-8 bg-bgSecondary sm:rounded-b-md flex-grow"
+          className="flex flex-col items-center flex-grow gap-1 p-4 sm:gap-2 sm:px-8 bg-bgSecondary sm:rounded-b-md"
           onSubmit={editJournalEntryHandler}
         >
-          <div className="flex flex-row justify-centerw-full mt-2 max-w-md gap-8">
+          <div className="flex flex-row max-w-md gap-8 mt-2 justify-centerw-full">
             {[
               {
                 type: "2",
@@ -542,9 +542,9 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
               <label className={inputLabel} htmlFor="length_in_minutes">
                 Kesto: {convertTime(journalEntryData.length_in_minutes)}
               </label>
-              <div className="w-full relative mb-2">
+              <div className="relative w-full mb-2">
                 <input
-                  className="w-full h-4 bg-bgPrimary border-2 border-borderPrimary rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-4 border-2 rounded-lg appearance-none cursor-pointer bg-bgPrimary border-borderPrimary"
                   type="range"
                   min="30"
                   max="195"
@@ -661,7 +661,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
             {showDetails && (
               <div className="relative w-full">
                 <textarea
-                  className="w-full h-18 border-borderPrimary bg-bgPrimary border-2 rounded-md p-2 pb-4 text-textPrimary ring-2 focus:outline-none ring-transparent focus:ring-2 focus:ring-primaryColor"
+                  className="w-full p-2 pb-4 border-2 rounded-md h-18 border-borderPrimary bg-bgPrimary text-textPrimary ring-2 focus:outline-none ring-transparent focus:ring-2 focus:ring-primaryColor"
                   onChange={changeHandler}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
@@ -691,11 +691,11 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
             )}
           </div>
 
-          <div className="flex flex-col items-center w-full gap-4 p-4 mt-auto text-center text-red-400">
+          <div className="w-full gap-4 p-4 mt-auto text-center text-red-400 ">
             {conflict.messageShort && <p>{conflict.messageShort}</p>}
-            <div className="flex w-full justify-between items-center">
+            <div className="relative">
               <button
-                className={`min-w-[160px] text-white px-4 py-4 rounded-md active:scale-95 transition-all duration-150
+                className={`min-w-[160px] text-white px-4 py-4 rounded-md hover:bg-hoverPrimary active:scale-95 transition-all duration-150
       ${submitButtonIsDisabled ? "bg-bgPrimary cursor-not-allowed" : "border-borderPrimary cursor-pointer bg-primaryColor"}`}
                 type="submit"
                 disabled={submitButtonIsDisabled}
@@ -703,7 +703,7 @@ const EditJournalEntryPage = ({ onClose, studentData, entryId }) => {
                 {getSubmitButtonText(journalEntryData.entry_type)}
               </button>
               <button
-                className="hover:cursor-pointer hover:bg-bgGray rounded m-1.5 p-2"
+                className="absolute hover:cursor-pointer hover:bg-bgGray rounded m-1.5 p-2 right-0"
                 onClick={deleteJournalEntryHandler}
               >
                 <FiTrash2 className="text-2xl" />

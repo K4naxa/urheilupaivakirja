@@ -34,6 +34,8 @@ const RegistrationPage = () => {
   const navigate = useNavigate();
   //inputRef = useRef(null);
 
+  const [emailTooltipVisible, setEmailTooltipVisible] = useState(false);
+
   // fetch options for registration form
   useEffect(() => {
     const fetchData = async () => {
@@ -350,23 +352,23 @@ const RegistrationPage = () => {
     "text-lg text-textPrimary border-borderPrimary h-10 w-full r border-b p-1 pl-0 bg-bgSecondary focus-visible:outline-none focus-visible:border-primaryColor";
 
   return (
-    <div className="bg-bgPrimary text-textPrimary grid place-items-center border-none h-screen w-screen">
+    <div className="grid w-screen h-screen border-none bg-bgPrimary text-textPrimary place-items-center">
       <div
         className="bg-bgSecondary border-borderPrimary flex h-full  w-full sm:max-w-[600px]
        flex-col self-center sm:border shadow-md min-h-max sm:h-[max-content] sm:rounded-md overflow-y-auto"
       >
-        <div className=" relative bg-primaryColor text-white border-borderPrimary border-b p-5 text-center text-xl shadow-md sm:rounded-t-md">
+        <div className="relative p-5 text-xl text-center text-white border-b shadow-md bg-primaryColor border-borderPrimary sm:rounded-t-md">
           <p>Rekisteröityminen</p>
 
           <Link
             to="/LoginPage"
-            className="absolute bottom-1/2 translate-y-1/2 left-5 text-3xl"
+            className="absolute text-3xl translate-y-1/2 bottom-1/2 left-5"
           >
             <FiArrowLeft />
           </Link>
         </div>
         <form
-          className="p-8 sm:p-12 grid grid-cols-1 gap-6 sm:gap-12 sm:grid-cols-regGrid w-full"
+          className="grid w-full grid-cols-1 gap-6 p-8 sm:p-12 sm:gap-12 sm:grid-cols-regGrid"
           onSubmit={registerHandler}
         >
           {/* First Name */}
@@ -426,13 +428,13 @@ const RegistrationPage = () => {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col gap-1 sm:col-span-2 relative">
+          <div className="relative flex flex-col gap-1 sm:col-span-2 ">
             <input
               onChange={changeHandler}
               type="email"
               name="email"
               id="email-input"
-              placeholder="Sähköposti"
+              placeholder="etu.sukunimi@edu.tampere.fi"
               className={
                 inputClass +
                 (errors.email && errors.email.value
@@ -451,6 +453,30 @@ const RegistrationPage = () => {
             {errors.email && errors.email.message && (
               <p className={errorClass}>{errors.email.message}</p>
             )}
+  <div className="absolute transform -translate-y-1/2 right-2 top-1/2">
+              <div
+                tabIndex="0"
+                onMouseEnter={() => setEmailTooltipVisible(true)}
+                onMouseLeave={() => setEmailTooltipVisible(false)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setEmailTooltipVisible((prev) => !prev);
+                }}
+                onBlur={() => setEmailTooltipVisible(false)}
+                className="flex items-center justify-center w-5 h-5 text-white border-2 rounded-full select-none border-primaryColor bg-primaryColor hover:bg-bgPrimary hover:text-primaryColor"
+              >
+                ?
+              </div>
+              {emailTooltipVisible && (
+                <div className="absolute p-1 mr-2 text-sm transform -translate-y-1/2 border rounded right-full top-1/2 border-borderPrimary text-textPrimary bg-bgPrimary whitespace-nowrap">
+                  Suosittelemme käyttämään
+                  <br />
+                  @edu.tampere.fi tai
+                  <br />
+                  @google.com -sähköpostiosoitetta
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Password */}
@@ -548,21 +574,20 @@ const RegistrationPage = () => {
 
           {/* TODO: Button to the center of the 2 cols when in sm:  */}
 
-
-
-          <div className="flex flex-col sm:col-span-2 w-full justify-center mb-8">
+          <div className="flex flex-col justify-center w-full mb-8 sm:col-span-2">
             <button
-              className="text-white border-borderPrimary  m-auto bg-primaryColor h-12 w-40 cursor-pointer rounded-md border-2 px-4 py-2 duration-75 hover:bg-hoverPrimary active:scale-95"
+              className="w-40 h-12 px-4 py-2 m-auto text-white duration-75 border-2 rounded-md cursor-pointer border-borderPrimary bg-primaryColor hover:bg-hoverPrimary active:scale-95"
               type="submit"
             >
               Rekisteröidy
             </button>
-            <a className="underline m-auto text-sm mt-2" href="https://urheilupaivakirja.tiipar.treok.io/gdpr_urheilupaivakirja.pdf">
-            Tietosuojaseloste
-          </a>
+            <a
+              className="m-auto mt-2 text-sm underline"
+              href="https://urheilupaivakirja.tiipar.treok.io/gdpr_urheilupaivakirja.pdf"
+            >
+              Tietosuojaseloste
+            </a>
           </div>
-
-
         </form>
       </div>
     </div>

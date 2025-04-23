@@ -1,6 +1,4 @@
-const config = require("./config");
-const options = config.DATABASE_OPTIONS;
-const knex = require("knex")(options);
+const knex = require("./dbConnection");
 
 const getUserFullName = async (userId) => {
     try {
