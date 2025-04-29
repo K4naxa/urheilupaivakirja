@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import registerService from "../services/registerService";
 import miscService from "../services/miscService";
@@ -11,6 +11,7 @@ import CampusSelect from "../components/registration/RegistrationCampusSelect";
 import SportSelect from "../components/registration/RegistrationSportSelect";
 import userService from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import EmailTooltip from "../components/registration/RegistrationEmailTooltip";
 
 const RegistrationPage = () => {
   const [registrationData, setRegistrationData] = useState({
@@ -33,8 +34,6 @@ const RegistrationPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   //inputRef = useRef(null);
-
-  const [emailTooltipVisible, setEmailTooltipVisible] = useState(false);
 
   // fetch options for registration form
   useEffect(() => {
@@ -110,8 +109,7 @@ const RegistrationPage = () => {
     errorCheckSimpleInput(registrationData.firstName, "firstName");
     errorCheckSimpleInput(registrationData.lastName, "lastName");
     errorCheckEmail();
-    errorCheckPassword();
-    errorCheckPasswordAgain();
+    errorCheckPasswords(); // errorcheck for both passwords
     errorCheckDropdown(registrationData.sportId, "sportId");
     errorCheckDropdown(registrationData.groupId, "groupId");
     errorCheckDropdown(registrationData.campusId, "campusId");
@@ -218,95 +216,49 @@ const RegistrationPage = () => {
   };
 
   // reset password errors and check if password is valid
-  const errorCheckPassword = () => {
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
+  const errorCheckPasswords = () => {
+    setErrors((prev) => {
+      const next = { ...prev };
+      const { password, passwordAgain } = registrationData;
 
-      const password = registrationData.password;
-
-      // Check if password is empty
-      if (password.length < 1) {
-        newErrors.password = {
+      // password regex
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+      if (!password) {
+        next.password = { value: "error", message: "Täytä tämä kenttä" };
+      } else if (!passwordRegex.test(password)) {
+        next.password = {
           value: "error",
+          message:
+            "Salasanan tulee olla vähintään 8 merkkiä pitkä ja sisältää vähintään yhden ison kirjaimen sekä numeron",
         };
       } else {
-        // Regular expressions for validation
-        const lengthCheck = /.{8,}/; // At least 8 characters
-        const capitalLetterCheck = /[A-Z]/; // At least one uppercase letter
-        const numberCheck = /[0-9]/; // At least one number
-
-        // Check if the password meets the required conditions
-        if (
-          !lengthCheck.test(password) ||
-          !capitalLetterCheck.test(password) ||
-          !numberCheck.test(password)
-        ) {
-          newErrors.password = {
-            value: "error",
-            message:
-              "Salasanan tulee olla vähintään 8 merkkiä pitkä ja sisältää vähintään yhden ison kirjaimen sekä numeron",
-          };
-        } else {
-          newErrors.password = {
-            value: "success",
-          };
-        }
+        next.password = { value: "success" };
       }
 
-      // Revalidate passwordAgain if present
-      if (registrationData.passwordAgain) {
-        if (registrationData.password !== registrationData.passwordAgain) {
-          newErrors.passwordAgain = {
-            value: "error",
-            message: "Salasanat eivät täsmää",
-          };
-        } else {
-          newErrors.passwordAgain = {
-            value: "success",
-          };
-        }
-      } else {
-        delete newErrors.passwordAgain;
-      }
-
-      return newErrors;
-    });
-  };
-
-  const errorCheckPasswordAgain = () => {
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
-
-      const passwordAgain = registrationData.passwordAgain;
-
-      if (passwordAgain.length < 1) {
-        newErrors.passwordAgain = {
-          value: "error",
-        };
-      } else if (registrationData.password !== passwordAgain) {
-        newErrors.passwordAgain = {
+      // confirm password
+      if (!passwordAgain) {
+        next.passwordAgain = { value: "error", message: "Täytä tämä kenttä" };
+      } else if (password !== passwordAgain) {
+        next.passwordAgain = {
           value: "error",
           message: "Salasanat eivät täsmää",
         };
       } else {
-        newErrors.passwordAgain = {
-          value: "success",
-        };
+        next.passwordAgain = { value: "success" };
       }
-
-      // Ensure that password validation is in sync
-      if (!registrationData.password || registrationData.password.length < 1) {
-        newErrors.password = {
-          value: "error",
-        };
-      } else {
-        // Clear password error if already validated
-        delete newErrors.password;
-      }
-
-      return newErrors;
+      return next;
     });
   };
+
+  // run after every keystroke
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false; //skip the initial mount
+      return;
+    }
+    errorCheckPasswords();
+  }, [registrationData.password, registrationData.passwordAgain]);
 
   const errorCheckDropdown = (fieldValue, fieldName) => {
     setErrors((prevErrors) => {
@@ -316,7 +268,7 @@ const RegistrationPage = () => {
       if (fieldValue === "" || fieldValue === "default") {
         newErrors[fieldName] = {
           value: "error",
-          message: "Valitse vaihtoehto", // "Select an option" in Finnish
+          message: "Valitse vaihtoehto",
         };
       } else {
         // If a valid option is selected, mark it as successful
@@ -453,32 +405,10 @@ const RegistrationPage = () => {
             {errors.email && errors.email.message && (
               <p className={errorClass}>{errors.email.message}</p>
             )}
-  <div className="absolute transform -translate-y-1/2 right-2 top-1/2">
-              <div
-                tabIndex="0"
-                onMouseEnter={() => setEmailTooltipVisible(true)}
-                onMouseLeave={() => setEmailTooltipVisible(false)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setEmailTooltipVisible((prev) => !prev);
-                }}
-                onBlur={() => setEmailTooltipVisible(false)}
-                className="flex items-center justify-center w-5 h-5 text-white border-2 rounded-full select-none border-primaryColor bg-primaryColor hover:bg-bgPrimary hover:text-primaryColor"
-              >
-                ?
-              </div>
-              {emailTooltipVisible && (
-                <div className="absolute p-1 mr-2 text-sm transform -translate-y-1/2 border rounded right-full top-1/2 border-borderPrimary text-textPrimary bg-bgPrimary whitespace-nowrap">
-                  Suosittelemme käyttämään
-                  <br />
-                  @edu.tampere.fi tai
-                  <br />
-                  @google.com -sähköpostiosoitetta
-                </div>
-              )}
+            <div className="absolute transform -translate-y-1/2 right-2 top-1/2">
+              <EmailTooltip />
             </div>
           </div>
-
           {/* Password */}
           <div className={containerClass}>
             <input
@@ -498,7 +428,7 @@ const RegistrationPage = () => {
                   : "")
               }
               value={registrationData.password}
-              onBlur={() => errorCheckPassword()}
+              onBlur={errorCheckPasswords}
             />
             {errors.password && errors.password.message && (
               <p className={errorClass}>{errors.password.message}</p>
@@ -524,7 +454,7 @@ const RegistrationPage = () => {
                   : "")
               }
               value={registrationData.passwordAgain}
-              onBlur={() => errorCheckPasswordAgain()}
+              onBlur={errorCheckPasswords}
             />
             {errors.passwordAgain && errors.passwordAgain.message && (
               <p className={errorClass}>{errors.passwordAgain.message}</p>
