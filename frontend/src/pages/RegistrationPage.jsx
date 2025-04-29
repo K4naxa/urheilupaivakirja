@@ -304,20 +304,25 @@ const RegistrationPage = () => {
     "text-lg text-textPrimary border-borderPrimary h-10 w-full r border-b p-1 pl-0 bg-bgSecondary focus-visible:outline-none focus-visible:border-primaryColor";
 
   return (
-    <div className="grid w-screen h-screen border-none bg-bgPrimary text-textPrimary place-items-center">
+    <div className="grid w-screen border-none min-h-dvh bg-bgPrimary text-textPrimary place-items-center">
       <div
-        className="bg-bgSecondary border-borderPrimary flex h-full  w-full sm:max-w-[600px]
+        className="bg-bgSecondary border-borderPrimary flex h-full w-full sm:max-w-[600px]
        flex-col self-center sm:border shadow-md min-h-max sm:h-[max-content] sm:rounded-md overflow-y-auto"
       >
-        <div className="relative p-5 text-xl text-center text-white border-b shadow-md bg-primaryColor border-borderPrimary sm:rounded-t-md">
-          <p>Rekisteröityminen</p>
-
+        <div
+          /* safe-area-inset should help with mobile OS top bar and bottom buttons*/
+          className="relative flex h-16 items-center justify-center
+             border-b border-borderPrimary bg-primaryColor text-xl text-white
+             shadow-md sm:rounded-t-md pt-[env(safe-area-inset-top)]"
+        >
           <Link
             to="/LoginPage"
-            className="absolute text-3xl translate-y-1/2 bottom-1/2 left-5"
+            className="absolute text-3xl -translate-y-1/2 left-5 top-1/2"
           >
             <FiArrowLeft />
           </Link>
+
+          <span>Rekisteröityminen</span>
         </div>
         <form
           className="grid w-full grid-cols-1 gap-6 p-8 sm:p-12 sm:gap-12 sm:grid-cols-regGrid"
