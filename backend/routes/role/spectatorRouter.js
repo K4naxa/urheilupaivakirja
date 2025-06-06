@@ -1,9 +1,11 @@
 var express = require("express");
 var express = require("express");
 var router = express.Router();
+
 const config = require("../../utils/config");
-const options = config.DATABASE_OPTIONS;
-const knex = require("knex")(options);
+
+const knex = require("../../utils/dbConnection");
+
 const frontendUrl = config.FRONTEND_URL;
 
 const bcrypt = require("bcryptjs");

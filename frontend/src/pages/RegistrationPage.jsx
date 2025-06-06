@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import registerService from "../services/registerService";
 import miscService from "../services/miscService";
@@ -11,6 +11,7 @@ import CampusSelect from "../components/registration/RegistrationCampusSelect";
 import SportSelect from "../components/registration/RegistrationSportSelect";
 import userService from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import EmailTooltip from "../components/registration/RegistrationEmailTooltip";
 
 const RegistrationPage = () => {
   const [registrationData, setRegistrationData] = useState({
@@ -108,8 +109,7 @@ const RegistrationPage = () => {
     errorCheckSimpleInput(registrationData.firstName, "firstName");
     errorCheckSimpleInput(registrationData.lastName, "lastName");
     errorCheckEmail();
-    errorCheckPassword();
-    errorCheckPasswordAgain();
+    errorCheckPasswords(); // errorcheck for both passwords
     errorCheckDropdown(registrationData.sportId, "sportId");
     errorCheckDropdown(registrationData.groupId, "groupId");
     errorCheckDropdown(registrationData.campusId, "campusId");
@@ -216,95 +216,49 @@ const RegistrationPage = () => {
   };
 
   // reset password errors and check if password is valid
-  const errorCheckPassword = () => {
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
+  const errorCheckPasswords = () => {
+    setErrors((prev) => {
+      const next = { ...prev };
+      const { password, passwordAgain } = registrationData;
 
-      const password = registrationData.password;
-
-      // Check if password is empty
-      if (password.length < 1) {
-        newErrors.password = {
+      // password regex
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+      if (!password) {
+        next.password = { value: "error", message: "Täytä tämä kenttä" };
+      } else if (!passwordRegex.test(password)) {
+        next.password = {
           value: "error",
+          message:
+            "Salasanan tulee olla vähintään 8 merkkiä pitkä ja sisältää vähintään yhden ison kirjaimen sekä numeron",
         };
       } else {
-        // Regular expressions for validation
-        const lengthCheck = /.{8,}/; // At least 8 characters
-        const capitalLetterCheck = /[A-Z]/; // At least one uppercase letter
-        const numberCheck = /[0-9]/; // At least one number
-
-        // Check if the password meets the required conditions
-        if (
-          !lengthCheck.test(password) ||
-          !capitalLetterCheck.test(password) ||
-          !numberCheck.test(password)
-        ) {
-          newErrors.password = {
-            value: "error",
-            message:
-              "Salasanan tulee olla vähintään 8 merkkiä pitkä ja sisältää vähintään yhden ison kirjaimen sekä numeron",
-          };
-        } else {
-          newErrors.password = {
-            value: "success",
-          };
-        }
+        next.password = { value: "success" };
       }
 
-      // Revalidate passwordAgain if present
-      if (registrationData.passwordAgain) {
-        if (registrationData.password !== registrationData.passwordAgain) {
-          newErrors.passwordAgain = {
-            value: "error",
-            message: "Salasanat eivät täsmää",
-          };
-        } else {
-          newErrors.passwordAgain = {
-            value: "success",
-          };
-        }
-      } else {
-        delete newErrors.passwordAgain;
-      }
-
-      return newErrors;
-    });
-  };
-
-  const errorCheckPasswordAgain = () => {
-    setErrors((prevErrors) => {
-      const newErrors = { ...prevErrors };
-
-      const passwordAgain = registrationData.passwordAgain;
-
-      if (passwordAgain.length < 1) {
-        newErrors.passwordAgain = {
-          value: "error",
-        };
-      } else if (registrationData.password !== passwordAgain) {
-        newErrors.passwordAgain = {
+      // confirm password
+      if (!passwordAgain) {
+        next.passwordAgain = { value: "error", message: "Täytä tämä kenttä" };
+      } else if (password !== passwordAgain) {
+        next.passwordAgain = {
           value: "error",
           message: "Salasanat eivät täsmää",
         };
       } else {
-        newErrors.passwordAgain = {
-          value: "success",
-        };
+        next.passwordAgain = { value: "success" };
       }
-
-      // Ensure that password validation is in sync
-      if (!registrationData.password || registrationData.password.length < 1) {
-        newErrors.password = {
-          value: "error",
-        };
-      } else {
-        // Clear password error if already validated
-        delete newErrors.password;
-      }
-
-      return newErrors;
+      return next;
     });
   };
+
+  // run after every keystroke
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false; //skip the initial mount
+      return;
+    }
+    errorCheckPasswords();
+  }, [registrationData.password, registrationData.passwordAgain]);
 
   const errorCheckDropdown = (fieldValue, fieldName) => {
     setErrors((prevErrors) => {
@@ -314,7 +268,7 @@ const RegistrationPage = () => {
       if (fieldValue === "" || fieldValue === "default") {
         newErrors[fieldName] = {
           value: "error",
-          message: "Valitse vaihtoehto", // "Select an option" in Finnish
+          message: "Valitse vaihtoehto",
         };
       } else {
         // If a valid option is selected, mark it as successful
@@ -350,23 +304,28 @@ const RegistrationPage = () => {
     "text-lg text-textPrimary border-borderPrimary h-10 w-full r border-b p-1 pl-0 bg-bgSecondary focus-visible:outline-none focus-visible:border-primaryColor";
 
   return (
-    <div className="bg-bgPrimary text-textPrimary grid place-items-center border-none h-screen w-screen">
+    <div className="grid w-screen border-none min-h-dvh bg-bgPrimary text-textPrimary place-items-center">
       <div
-        className="bg-bgSecondary border-borderPrimary flex h-full  w-full sm:max-w-[600px]
+        className="bg-bgSecondary border-borderPrimary flex h-full w-full sm:max-w-[600px]
        flex-col self-center sm:border shadow-md min-h-max sm:h-[max-content] sm:rounded-md overflow-y-auto"
       >
-        <div className=" relative bg-primaryColor text-white border-borderPrimary border-b p-5 text-center text-xl shadow-md sm:rounded-t-md">
-          <p>Rekisteröityminen</p>
-
+        <div
+          /* safe-area-inset should help with mobile OS top bar and bottom buttons*/
+          className="relative flex h-16 items-center justify-center
+             border-b border-borderPrimary bg-primaryColor text-xl text-white
+             shadow-md sm:rounded-t-md pt-[env(safe-area-inset-top)]"
+        >
           <Link
             to="/LoginPage"
-            className="absolute bottom-1/2 translate-y-1/2 left-5 text-3xl"
+            className="absolute text-3xl -translate-y-1/2 left-5 top-1/2"
           >
             <FiArrowLeft />
           </Link>
+
+          <span>Rekisteröityminen</span>
         </div>
         <form
-          className="p-8 sm:p-12 grid grid-cols-1 gap-6 sm:gap-12 sm:grid-cols-regGrid w-full"
+          className="grid w-full grid-cols-1 gap-6 p-8 sm:p-12 sm:gap-12 sm:grid-cols-regGrid"
           onSubmit={registerHandler}
         >
           {/* First Name */}
@@ -426,13 +385,13 @@ const RegistrationPage = () => {
           </div>
 
           {/* Email */}
-          <div className="flex flex-col gap-1 sm:col-span-2 relative">
+          <div className="relative flex flex-col gap-1 sm:col-span-2 ">
             <input
               onChange={changeHandler}
               type="email"
               name="email"
               id="email-input"
-              placeholder="Sähköposti"
+              placeholder="etu.sukunimi@edu.tampere.fi"
               className={
                 inputClass +
                 (errors.email && errors.email.value
@@ -451,8 +410,10 @@ const RegistrationPage = () => {
             {errors.email && errors.email.message && (
               <p className={errorClass}>{errors.email.message}</p>
             )}
+            <div className="absolute transform -translate-y-1/2 right-2 top-1/2">
+              <EmailTooltip />
+            </div>
           </div>
-
           {/* Password */}
           <div className={containerClass}>
             <input
@@ -472,7 +433,7 @@ const RegistrationPage = () => {
                   : "")
               }
               value={registrationData.password}
-              onBlur={() => errorCheckPassword()}
+              onBlur={errorCheckPasswords}
             />
             {errors.password && errors.password.message && (
               <p className={errorClass}>{errors.password.message}</p>
@@ -498,7 +459,7 @@ const RegistrationPage = () => {
                   : "")
               }
               value={registrationData.passwordAgain}
-              onBlur={() => errorCheckPasswordAgain()}
+              onBlur={errorCheckPasswords}
             />
             {errors.passwordAgain && errors.passwordAgain.message && (
               <p className={errorClass}>{errors.passwordAgain.message}</p>
@@ -548,21 +509,20 @@ const RegistrationPage = () => {
 
           {/* TODO: Button to the center of the 2 cols when in sm:  */}
 
-
-
-          <div className="flex flex-col sm:col-span-2 w-full justify-center mb-8">
+          <div className="flex flex-col justify-center w-full mb-8 sm:col-span-2">
             <button
-              className="text-white border-borderPrimary  m-auto bg-primaryColor h-12 w-40 cursor-pointer rounded-md border-2 px-4 py-2 duration-75 hover:bg-hoverPrimary active:scale-95"
+              className="w-40 h-12 px-4 py-2 m-auto text-white duration-75 border-2 rounded-md cursor-pointer border-borderPrimary bg-primaryColor hover:bg-hoverPrimary active:scale-95"
               type="submit"
             >
               Rekisteröidy
             </button>
-            <a className="underline m-auto text-sm mt-2" href="https://urheilupaivakirja.tiipar.treok.io/gdpr_urheilupaivakirja.pdf">
-            Tietosuojaseloste
-          </a>
+            <a
+              className="m-auto mt-2 text-sm underline"
+              href="https://urheilupaivakirja.tiipar.treok.io/gdpr_urheilupaivakirja.pdf"
+            >
+              Tietosuojaseloste
+            </a>
           </div>
-
-
         </form>
       </div>
     </div>

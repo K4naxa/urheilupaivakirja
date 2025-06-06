@@ -8,13 +8,12 @@ import { FiArrowLeft } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { TbPinFilled } from "react-icons/tb";
 
-
 const RenderSingleNews = ({ news }) => {
   const [opened, setOpened] = useState(false);
   const toggleOpen = () => setOpened(!opened);
   return (
     <div
-      className="p-4 border rounded-md cursor-pointer bg-bgSecondary md:max-w-96 border-borderPrimary hover:bg-bgPrimary"
+      className="relative p-4 border rounded-md cursor-pointer bg-bgSecondary md:max-w-96 border-borderPrimary hover:bg-bgPrimary"
       onClick={toggleOpen}
     >
       {news.pinned ? (
@@ -112,7 +111,7 @@ const StudentNewsPage = () => {
 
         <div className="grid justify-center gap-8 m-4 md:grid-cols-2 auto-rows-max">
           {sortedNews.length > 0 ? (
-            newsData.map((news) => (
+            sortedNews.map((news) => (
               <RenderSingleNews key={news.id} news={news} />
             ))
           ) : (

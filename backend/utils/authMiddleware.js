@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
 const config = require("./config");
-const options = config.DATABASE_OPTIONS;
-
 
 const isStudent = (req, res, next) => {
   //console.log("Checking if user is student");

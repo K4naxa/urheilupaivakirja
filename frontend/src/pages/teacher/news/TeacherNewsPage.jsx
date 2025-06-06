@@ -18,9 +18,11 @@ const RenderSingleNews = ({ news }) => {
       onClick={toggleOpen}
     >
       {news.pinned ? (
-
-          <TbPinFilled size={20} title="Kiinnitetty" className="absolute top-[-3px] right-[-3px] m-1 text-primaryColor" />
-
+        <TbPinFilled
+          size={20}
+          title="Kiinnitetty"
+          className="absolute top-[-3px] right-[-3px] m-1 text-primaryColor"
+        />
       ) : null}
       <div className="relative w-full px-1 border-b border-borderPrimary">
         <button
@@ -130,9 +132,13 @@ const TeacherNewsPage = () => {
         </div>
 
         <div className="grid justify-center gap-8 m-4 md:grid-cols-2 auto-rows-max">
-          {sortedNews.map((news) => (
-            <RenderSingleNews key={news.id} news={news} />
-          ))}
+          {sortedNews.length > 0 ? (
+            sortedNews.map((news) => (
+              <RenderSingleNews key={news.id} news={news} />
+            ))
+          ) : (
+            <p>Ei tiedotteita</p>
+          )}
         </div>
       </div>
     </div>
