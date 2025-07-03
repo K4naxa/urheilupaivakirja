@@ -126,7 +126,7 @@ router.get("/data", isAuthenticated, isStudent, async (req, res) => {
             "COUNT(CASE WHEN entry_type_id = 1 THEN 1 END) as entry_type_1_count"
           ),
           knex.raw("COUNT(*) as total_entries_count"),
-          knex.raw("CAST(SUM(length_in_minutes) AS UNSIGNED) as total_minutes")
+          knex.raw("CAST(SUM(length_in_minutes) AS INTEGER) as total_minutes")
         )
         .where("user_id", userId)
         .first(),
@@ -226,7 +226,7 @@ router.get(
           ),
           knex.raw("COUNT(*) as total_entries_count"),
           knex.raw(
-            "CAST(SUM(journal_entries.length_in_minutes) AS UNSIGNED) as total_minutes"
+            "CAST(SUM(journal_entries.length_in_minutes) AS INTEGER) as total_minutes"
           )
         )
         .first();
@@ -310,7 +310,7 @@ router.get(
         .select("pinned_user_id")
         .where("pinner_user_id", pinner_id);
 
-      res.json( pinnedStudents );
+      res.json(pinnedStudents);
     } catch (error) {
       console.error("Error fetching pinned students:", error);
       res
@@ -319,8 +319,6 @@ router.get(
     }
   }
 );
-
-
 
 // pin a student
 router.post(
@@ -478,7 +476,9 @@ router.put("/verify/:id", isAuthenticated, isTeacher, async (req, res) => {
       .first();
 
     if (!existingStudent) {
-      return res.status(404).json({ message: "Student not found or already verified" });
+      return res
+        .status(404)
+        .json({ message: "Student not found or already verified" });
     }
     // update
     const updateCount = await knex("students")
@@ -489,13 +489,16 @@ router.put("/verify/:id", isAuthenticated, isTeacher, async (req, res) => {
       res.status(200).json({ message: "User verified successfully" });
     } else {
       // Just to make sure...
-      res.status(400).json({ message: "No changes made, student was likely already verified" });
+      res.status(400).json({
+        message: "No changes made, student was likely already verified",
+      });
     }
   } catch (error) {
     console.error("Error verifying student:", error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
-
 
 module.exports = router;
